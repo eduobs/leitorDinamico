@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<title>Leitor dinâmico</title>
+
+		<meta name="description" content="">
+		<meta name="author" content="Eduardo Barbosa!">
+
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="css/style.css" rel="stylesheet">
+  	</head>
+
+  	<body>
+		<script>
+			var stop = false;
+
+			function setarStop(){
+				stop = true;
+			}
+		</script>
+    	<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-4">
+					<form role="form">
+						<div class="form-group">						
+							<label for="Texto">Texto</label>
+							<textarea class="form-control" id="textoLeitura"></textarea>
+						</div>
+						
+						<div class="form-group">
+							<label for="exampleInputPassword1">PPM</label>
+							<input type="number" id="velocidade" class="form-control" placeholder="Ex.: 250" />
+						</div>
+					
+						<button type="submit" class="btn btn-primary">Iniciar</button>
+						<button type="button" onclick="setarStop()" class="btn btn-danger">Pausar</button>
+					</form>
+				</div>
+			
+				<div class="col-md-1"></div>
+			
+				<div class="col-md-7" style="text-align: center;">
+					<br /><br />
+					<h1 id="texto_resultado">
+						Texto da leitura
+					</h1>
+				</div>
+			</div>
+		</div>
+		<script src="js/jquery.min.js"></script>
+		<script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+    	<script src="js/bootstrap.min.js"></script>
+    	<script src="js/scripts.js"></script>
+		
+		<script>			
+			$(document).ready(function(){
+				
+				
+				$("form").submit(function(e){
+					try {
+						var textoLeitura = $("#textoLeitura").val();
+						var ppm = $("#velocidade").val();
+
+						if(!textoLeitura) {
+							alert("É necessário informar o texto.");
+							e.preventDefault(e);
+							return;
+						}
+
+						if(ppm <= 0){
+							alert("É necessário informar o PPM (Palavras por mínuto)");
+							e.preventDefault(e);
+							return;
+						}
+
+						var tempo = 60000/ppm;
+						
+						$("#texto_resultado").text("");
+						
+						var arrayTextoLeitura = textoLeitura.split(" ");
+
+						if(!stop){
+							setTimeout(() => { preencheTexto(arrayTextoLeitura, tempo) }, tempo);
+						}
+					} catch(error)
+					{
+						console.log(error);
+						alert("Xiiiii, deu erro! :/");
+					}
+
+					e.preventDefault(e);
+				});
+
+				function preencheTexto(arrayTexto, tempo){				
+					
+					var textoImpressao = arrayTexto[0];
+					$("#texto_resultado").text(textoImpressao);
+
+					if(arrayTexto.length > 1){
+						
+						if(!stop){
+							arrayTexto.splice(0, 1);
+						}
+						
+					 	setTimeout(() => { preencheTexto(arrayTexto, tempo) }, tempo);
+					}
+				}
+			});
+		</script>
+  	</body>
+</html>
